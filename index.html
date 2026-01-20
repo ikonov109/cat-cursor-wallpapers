@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кот следит за курсором</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        #cat {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .head {
+            width: 120px;
+            height: 120px;
+            background-color: #8B4513;
+            border-radius: 60px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .eye {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 40px;
+            transition: transform 0.1s ease;
+        }
+
+        .eye.left {
+            left: 30px;
+        }
+
+        .eye.right {
+            right: 30px;
+        }
+
+        .pupil {
+            width: 15px;
+            height: 15px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+            top: 7px;
+            left: 7px;
+            transition: transform 0.1s ease;
+        }
+
+        .ear {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 40px solid #8B4513;
+            position: absolute;
+            top: -10px;
+        }
+
+        .ear.left {
+            left: 20px;
+            transform: rotate(-30deg);
+        }
+
+        .ear.right {
+            right: 20px;
+            transform: rotate(30deg);
+        }
+
+        .nose {
+            width: 20px;
+            height: 15px;
+            background-color: pink;
+            border-radius: 50% 50% 30% 30%;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .mouth {
+            width: 40px;
+            height: 20px;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+        }
+
+        .whisker {
+            width: 60px;
+            height: 1px;
+            background-color: #333;
+            position: absolute;
+        }
+
+        .whisker.top {
+            top: 5px;
+            right: -60px;
+        }
+
+        .whisker.middle {
+            top: 10px;
+            right: -60px;
+        }
+
+        .whisker.bottom {
+            top: 15px;
+            right: -60px;
+        }
+
+        .whisker.left {
+            transform: scaleX(-1);
+        }
+    </style>
+</head>
+<body>
+    <div id="cat">
+        <div class="head">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="eye left">
+                <div class="pupil"></div>
+            </div>
+            <div class="eye right">
+                <div class="pupil"></div>
+            </div>
+            <div class="nose"></div>
+            <div class="mouth">
+                <div class="whisker top"></div>
+                <div class="whisker middle"></div>
+                <div class="whisker bottom"></div>
+                <div class="whisker left top"></div>
+                <div class="whisker left middle"></div>
+                <div class="whisker left bottom"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pupils = document.querySelectorAll('.pupil');
+
+        document.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const catRect = document.getElementById('cat').getBoundingClientRect();
+            const centerX = catRect.left + catRect.width / 2;
+            const centerY = catRect.top + catRect.height / 2;
+
+            // Вычисляем угол между центром кота и курсором
+            const angle = Math.atan2(clientY - centerY, clientX - centerX);
+
+            // Ограничиваем движение зрачков (чтобы не выходили за пределы глаз)
+            const maxOffset = 5;
+            const offsetX = Math.cos(angle) * maxOffset;
+            const offsetY = Math.sin(angle) * maxOffset;
+
+            // Применяем смещение к каждому зрачку
+            pupils.forEach(pupil => {
+                pupil.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
